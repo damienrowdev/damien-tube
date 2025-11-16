@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -37,6 +38,15 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            $user->channel()->create([
+                'name' => $user->name
+            ]);
+        });
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -49,5 +59,10 @@ class User extends Authenticatable
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
         ];
+    }
+
+    public function channel(): HasOne
+    {
+        return $this->hasOne(Channel::class);
     }
 }

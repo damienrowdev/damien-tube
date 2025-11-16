@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('channels', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('image_url')->nullable();
             $table->timestamps();
         });
     }
